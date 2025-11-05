@@ -122,7 +122,7 @@ if __name__ == '__main__':
             for local_file, local_file_info in local_files.items():
                 remote_file = Path(local_file).relative_to(local_site_path)
                 remote_file_info = next((file for file in remote_files if Path(file[0]).relative_to('.') == remote_file), None)
-                if remote_file_info is None or (int(remote_file_info[2]) < local_file_info['size']):
+                if remote_file_info is None or (int(remote_file_info[2]) != local_file_info['size']):
                     changed_files.append(local_file)
 
         # Create directories if not yet present

@@ -111,26 +111,26 @@ if __name__ == '__main__':
                 local_files[filepath] = {'modify': datetime.datetime.fromtimestamp(os.path.getmtime(filepath)),
                                          'size': os.path.getsize(filepath)}
 
-        # Find the files that have changed on the local machine
-        print('\U0001F440 Looking for changes...')
-        changed_files = []
-        for local_file, local_file_info in local_files.items():
-            remote_file = Path(local_file).relative_to(local_site_path)
-            remote_file_info = next((file for file in remote_files if Path(file[0]).relative_to('.') == remote_file), None)
-            if remote_file_info is None or (int(remote_file_info[2]) < local_file_info['size']):
-                changed_files.append(local_file)
-
         if args.force:
             # Upload all local files
             print("⚠️ Force option given. Uploading all local files.")
             changed_files = local_files.keys()
+        else:
+            # Find the files that have changed on the local machine
+            print('\U0001F440 Looking for changes...')
+            changed_files = []
+            for local_file, local_file_info in local_files.items():
+                remote_file = Path(local_file).relative_to(local_site_path)
+                remote_file_info = next((file for file in remote_files if Path(file[0]).relative_to('.') == remote_file), None)
+                if remote_file_info is None or (int(remote_file_info[2]) < local_file_info['size']):
+                    changed_files.append(local_file)
 
         # Create directories if not yet present
         print('\U0001FA9E Mirroring directories...')
         local_dirs = []
         for root, dirs, _ in Path(local_site_path).walk():
             for d in dirs:
-                local_dirs.append((Path(root) / d).relative_to('output'))
+                local_dirs.append((Path(root) / d).relative_to(local_site_path))
 
         remote_dirs = []  # initialize the list in case there are no remote dirs
         remote_dirs = [Path(d).relative_to(ftp_path) for d in get_remote_dirs(ftp_client, ftp_path)]

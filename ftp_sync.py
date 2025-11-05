@@ -86,7 +86,7 @@ if __name__ == '__main__':
     ftp_path = os.environ['FTP_PATH']
 
     # Local site settings
-    local_site_path = 'output'
+    local_site_path = os.environ['LOCAL_SITE_PATH']
 
     # Create an FTP client
     ftp_client = ftplib.FTP_TLS()

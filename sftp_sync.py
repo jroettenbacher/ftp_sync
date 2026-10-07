@@ -178,7 +178,6 @@ if __name__ == '__main__':
                 remote_file_info = next((f for f in remote_files if Path(f[0]).relative_to('.') == remote_file), None)
                 if remote_file_info is None or (int(remote_file_info[2]) != local_file_info['size']):
                     changed_files.append(local_file)
-
         print('\U0001FA9E Mirroring directories...')
         local_dirs = []
         for root, dirs, _ in Path(local_site_path).walk():
@@ -191,7 +190,7 @@ if __name__ == '__main__':
         print('\U0001F6D2 Uploading files...')
         for file in tqdm(changed_files, desc='Uploading'):
             tqdm.write(file.as_posix())
-            remote_file_path = Path(sftp_path) / Path(file).relative_to(local_site_path)
+            remote_file_path = PurePosixPath(sftp_path) / PurePosixPath(file).relative_to(local_site_path)
             try:
                 sftp.put(str(file), str(remote_file_path))
             except Exception as e:
